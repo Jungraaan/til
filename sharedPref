@@ -1,0 +1,43 @@
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            CounterTheme {
+                MainScreen()
+            }
+        }
+    }
+}
+
+
+@Composable
+fun MainScreen() {
+    val activity = LocalContext.current as? Activity
+    val sharedPref = remember {
+        activity?.getPreferences(Context.MODE_PRIVATE)
+    }
+
+    var count by remember {
+        val saveCount = sharedPref?.getInt("lastCount", 0)
+        mutableStateMapOf(value: saveCount ?: 0)
+    }  //작업공간 변수 선언
+    Button(onClick = {
+        count++  //github에 error note 만들기
+        sharedPref?.edit {
+            putInt("lastCount", count)
+        }
+    }) {
+       Text(text = "Click")
+
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainScreenPreview() {
+    CounterTheme {
+        MainScreen()
+    }
+}
